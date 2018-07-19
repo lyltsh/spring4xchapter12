@@ -7,6 +7,7 @@
     <artifactId>Spring4xchapter12</artifactId>
 	<version>1.0</version>
     <name>Spring4xchapter12</name>
+    <packaging>war</packaging>
     <dependencies>
         <dependency>
             <groupId>commons-lang</groupId>
@@ -72,7 +73,7 @@
                 <configuration>
                     <connectors>
                         <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-                            <port>80</port>
+                            <port>8080</port>
                             <maxIdleTime>60000</maxIdleTime>
                         </connector>
                     </connectors>
