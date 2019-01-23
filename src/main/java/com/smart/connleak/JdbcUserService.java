@@ -26,15 +26,18 @@ public class JdbcUserService {
 
     @Transactional
     public void logon(String userName) {
+        Connection conn = null;
         try {
-            Connection conn = jdbcTemplate.getDataSource().getConnection();
-//            Connection conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource());
-            
+//          conn = jdbcTemplate.getDataSource().getConnection(); //从数据源获取连接
+            conn = DataSourceUtils.getConnection(jdbcTemplate.getDataSource()); //从事务上下文获取连接
+
             String sql = "UPDATE t_user SET last_logon_time=? WHERE user_name =?";
             jdbcTemplate.update(sql, System.currentTimeMillis(), userName);
             Thread.sleep(1000);//②模拟程序代码的执行时间
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            DataSourceUtils.releaseConnection(conn, jdbcTemplate.getDataSource());
         }
 
     }
@@ -55,7 +58,7 @@ public class JdbcUserService {
 
     public static void reportConn(BasicDataSource basicDataSource) {
         System.out.println("连接数[active:idle]-[" +
-                       basicDataSource.getNumActive()+":"+basicDataSource.getNumIdle()+"]");
+                basicDataSource.getNumActive() + ":" + basicDataSource.getNumIdle() + "]");
     }
 
     private static class UserServiceRunner extends Thread {
@@ -79,7 +82,7 @@ public class JdbcUserService {
 
         BasicDataSource basicDataSource = (BasicDataSource) ctx.getBean("dataSource");
         JdbcUserService.reportConn(basicDataSource);
-        
+
         JdbcUserService.asynchrLogon(userService, "tom");
         JdbcUserService.sleep(500);
         JdbcUserService.reportConn(basicDataSource);

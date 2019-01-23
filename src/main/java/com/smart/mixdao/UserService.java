@@ -30,10 +30,12 @@ public class UserService extends BaseService {
 
     public void logon(String userName) {
     	System.out.println("before userService.updateLastLogonTime()..");
+    	//hibernateTemplate访问数据库
         updateLastLogonTime(userName);
         System.out.println("end userService.updateLastLogonTime()..");
         
         System.out.println("before scoreService.addScore()..");
+        //jdbcTemplate访问数据库
         scoreService.addScore(userName, 20);
         System.out.println("end scoreService.addScore()..");
     }
